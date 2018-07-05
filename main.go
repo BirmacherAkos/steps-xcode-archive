@@ -278,30 +278,27 @@ func main() {
 			log.Warnf("Failed to check if xcpretty is installed, error: %s", err)
 			log.Printf("Switching to xcodebuild for output tool")
 			outputTool = "xcodebuild"
-		} else {
-			var err error
-			if !installed {
-				log.Warnf(`xcpretty is not installed`)
-				fmt.Println()
-				log.Printf("Installing xcpretty")
+		} else if !installed {
+			log.Warnf(`xcpretty is not installed`)
+			fmt.Println()
+			log.Printf("Installing xcpretty")
 
-				if err = utils.InstallXcpretty(); err != nil {
-					log.Warnf("Failed to install xcpretty, error: %s", err)
-					log.Printf("Switching to xcodebuild for output tool")
-					outputTool = "xcodebuild"
-				}
-			}
-
-			if err == nil {
-				xcprettyVersion, err := utils.XcprettyVersion()
-				if err != nil {
-					log.Warnf("Failed to determin xcpretty version, error: %s", err)
-					log.Printf("Switching to xcodebuild for output tool")
-					outputTool = "xcodebuild"
-				}
-				log.Printf("- xcprettyVersion: %s", xcprettyVersion.String())
+			if err := utils.InstallXcpretty(); err != nil {
+				log.Warnf("Failed to install xcpretty, error: %s", err)
+				log.Printf("Switching to xcodebuild for output tool")
+				outputTool = "xcodebuild"
 			}
 		}
+	}
+
+	if outputTool == "xcpretty" {
+		xcprettyVersion, err := utils.XcprettyVersion()
+		if err != nil {
+			log.Warnf("Failed to determin xcpretty version, error: %s", err)
+			log.Printf("Switching to xcodebuild for output tool")
+			outputTool = "xcodebuild"
+		}
+		log.Printf("- xcprettyVersion: %s", xcprettyVersion.String())
 	}
 
 	// Validation CustomExportOptionsPlistContent

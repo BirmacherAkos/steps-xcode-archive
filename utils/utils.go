@@ -47,14 +47,9 @@ func XcodeBuildVersion() (XcodebuildVersionModel, error) {
 	return createXcodeVersionFromOutput(versionOut)
 }
 
-// IsToolInstalled ...
-func IsToolInstalled(name, version string) (bool, error) {
-	return rubycommand.IsGemInstalled(name, version)
-}
-
 // IsXcprettyInstalled ...
 func IsXcprettyInstalled() (bool, error) {
-	return IsToolInstalled("xcpretty", "")
+	return rubycommand.IsGemInstalled("xcpretty", "")
 }
 
 // InstallXcpretty ...
@@ -65,10 +60,10 @@ func InstallXcpretty() error {
 	}
 
 	for _, cmd := range cmds {
-		log.Donef("$ %s", cmd.PrintableCommandArgs())
+		log.Printf("$ %s", cmd.PrintableCommandArgs())
 
 		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("command failed, error: %s", err)
+			return fmt.Errorf("failed to create xcpretty install command, error: %s", err)
 		}
 	}
 
